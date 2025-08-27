@@ -5,7 +5,7 @@ from diator.requests.request import Request
 from diator.response import Response
 
 Req = TypeVar("Req", bound=Request, contravariant=True)
-Res = TypeVar("Res", Response, None, covariant=True)
+Res = TypeVar("Res", bound=Response | None, covariant=True)
 
 
 class RequestHandler(Protocol[Req, Res]):
