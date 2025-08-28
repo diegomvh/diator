@@ -84,6 +84,7 @@ def mediator() -> Mediator:
 async def test_sending_request_with_response(mediator: Mediator) -> None:
     handler = await TestContainer().resolve(ReadMeetingDetailsQueryHandler)
 
+    assert handler is not None
     assert not handler.called
 
     response = await mediator.send(ReadMeetingDetailsQuery(meeting_room_id=uuid4()))
@@ -96,6 +97,8 @@ async def test_sending_request_with_response(mediator: Mediator) -> None:
 
 async def test_sending_request_without_response(mediator: Mediator) -> None:
     handler = await TestContainer().resolve(CloseMeetingRoomCommandHandler)
+
+    assert handler is not None
     assert not handler.called
 
     await mediator.send(CloseMeetingRoomCommand(meeting_room_id=uuid4()))

@@ -1,9 +1,17 @@
 from dataclasses import dataclass, field
+from typing import Protocol, TypeVar
 from uuid import UUID, uuid4
 
+from diator.response import TResponse
 
-@dataclass(frozen=True, kw_only=True)
-class Request:
+Res = TypeVar("Res", bound=TResponse | None, covariant=True)
+
+class TRequest(Protocol[Res]):
+    request_id: UUID
+
+
+@dataclass(kw_only=True)
+class Request(TRequest[Res]):
     """
     Base class for request-type objects.
 

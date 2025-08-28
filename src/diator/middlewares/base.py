@@ -1,16 +1,16 @@
 import functools
 from typing import Awaitable, Callable, Protocol, TypeVar
 
-from diator.requests import Request
-from diator.response import Response
+from diator.requests.request import TRequest
+from diator.response import TResponse
 
-Req = TypeVar("Req", bound=Request, contravariant=True)
-Res = TypeVar("Res", Response, None, covariant=True)
+Req = TypeVar("Req", bound=TRequest, contravariant=True)
+Res = TypeVar("Res", bound=TResponse | None, covariant=True)
 HandleType = Callable[[Req], Awaitable[Res]]
 
 
 class Middleware(Protocol):
-    async def __call__(self, request: Request, handle: HandleType) -> Res:
+    async def __call__(self, request: TRequest[Res], handle: HandleType) -> Res:
         ...
 
 

@@ -1,8 +1,12 @@
 from dataclasses import dataclass
+from typing import Protocol
 
 
-@dataclass(frozen=True, kw_only=True)
-class Response:
+class TResponse(Protocol):
+    pass
+
+@dataclass(kw_only=True)
+class Response(TResponse):
     """
     Base class for response type objects.
 

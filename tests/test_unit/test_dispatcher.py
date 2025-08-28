@@ -1,22 +1,28 @@
 from dataclasses import dataclass, field
+from typing import Any, cast
 from uuid import UUID, uuid4
 
+from diator.container.protocol import Container
 from diator.dispatcher import DefaultDispatcher
 from diator.events import Event
 from diator.middlewares import MiddlewareChain
 from diator.requests import Request, RequestHandler
 from diator.requests.map import RequestMap
+from diator.requests.request import TRequest
+from diator.response import Response
 
 
 @dataclass(kw_only=True)
-class ReadMeetingDetailsQuery:
+class ReadMeetingDetailsQueryResult(Response):
     meeting_room_id: UUID = field()
-
+    second: str = field(default="")
+    third: str = field(default="")
 
 @dataclass(kw_only=True)
-class ReadMeetingDetailsQueryResult:
+class ReadMeetingDetailsQuery(Request[ReadMeetingDetailsQueryResult]):
     meeting_room_id: UUID = field()
-
+    second: str = field(default="")
+    third: str = field(default="")
 
 class ReadMeetingDetailsQueryHandler(
     RequestHandler[ReadMeetingDetailsQuery, ReadMeetingDetailsQueryResult]  # type: ignore
@@ -33,12 +39,18 @@ class ReadMeetingDetailsQueryHandler(
         self.called = True
         return ReadMeetingDetailsQueryResult(meeting_room_id=request.meeting_room_id)
 
-
-class TestQueryContainer:
+class TestQueryContainer(Container):
     _handler = ReadMeetingDetailsQueryHandler()
 
     async def resolve(self, type_):
         return self._handler
+
+    @property
+    def external_container(self) -> Container | None:
+        raise NotImplementedError
+
+    def attach_external_container(self, container: Container) -> None:
+        raise NotImplementedError
 
 
 async def test_default_dispatcher_logic() -> None:
@@ -58,6 +70,7 @@ async def test_default_dispatcher_logic() -> None:
     result = await dispatcher.dispatch(request)
 
     assert request.meeting_room_id == "REQ"
+    assert result.response is not None 
     assert result.response.meeting_room_id == "RES"
 
 
@@ -77,34 +90,37 @@ async def test_default_dispatcher_chain_logic() -> None:
     result = await dispatcher.dispatch(request)
 
     assert request.meeting_room_id == "REQ"
+    assert result.response is not None
     assert result.response.meeting_room_id == "RES"
 
     assert request.second == "DONE"
+    assert result.response is not None
     assert result.response.second == "DONE"
 
     assert request.third == "DONE"
+    assert result.response is not None
     assert result.response.third == "DONE"
 
 
 class FirstMiddleware:
-    async def __call__(self, request: Request, handle):
-        request.meeting_room_id = "REQ"
+    async def __call__(self, request: TRequest[Any], handle):
+        cast(ReadMeetingDetailsQuery, request).meeting_room_id = uuid4() 
         response = await handle(request)
         response.meeting_room_id = "RES"
         return response
 
 
 class SecondMiddleware:
-    async def __call__(self, request: Request, handle):
-        request.second = "DONE"
+    async def __call__(self, request: TRequest[Any], handle):
+        cast(ReadMeetingDetailsQuery, request).second = "DONE"
         response = await handle(request)
         response.second = "DONE"
         return response
 
 
 class ThirdMiddleware:
-    async def __call__(self, request: Request, handle):
-        request.third = "DONE"
+    async def __call__(self, request: TRequest[Any], handle):
+        cast(ReadMeetingDetailsQuery, request).third = "DONE"
         response = await handle(request)
         response.third = "DONE"
         return response

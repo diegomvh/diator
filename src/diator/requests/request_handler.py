@@ -1,11 +1,11 @@
 from typing import Protocol, TypeVar
 
 from diator.events.event import Event
-from diator.requests.request import Request
-from diator.response import Response
+from diator.requests.request import TRequest
+from diator.response import TResponse
 
-Req = TypeVar("Req", bound=Request, contravariant=True)
-Res = TypeVar("Res", bound=Response | None, covariant=True)
+Req = TypeVar("Req", bound=TRequest, contravariant=True)
+Res = TypeVar("Res", bound=TResponse | None, covariant=True)
 
 
 class RequestHandler(Protocol[Req, Res]):

@@ -1,12 +1,14 @@
-from typing import Type
+from typing import Type, TypeVar, cast
 
 from diator.container.protocol import Container
 from diator.dispatcher import DefaultDispatcher, Dispatcher
 from diator.events import Event, EventEmitter
 from diator.middlewares import MiddlewareChain
-from diator.requests import Request, RequestMap
-from diator.response import Response
+from diator.requests import RequestMap
+from diator.requests.request import TRequest
+from diator.response import TResponse
 
+Res = TypeVar("Res", bound=TResponse | None, covariant=True)
 
 class Mediator:
     """
@@ -47,13 +49,13 @@ class Mediator:
             request_map=request_map, container=container, middleware_chain=middleware_chain  # type: ignore
         )
 
-    async def send(self, request: Request) -> Response | None:
+    async def send(self, request: TRequest[Res]) -> Res:
         dispatch_result = await self._dispatcher.dispatch(request)
 
         if dispatch_result.events:
             await self._send_events(dispatch_result.events.copy())
 
-        return dispatch_result.response
+        return cast(Res, dispatch_result.response)
 
     async def _send_events(self, events: list[Event]) -> None:
         if not self._event_emitter:
