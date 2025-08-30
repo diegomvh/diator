@@ -1,16 +1,26 @@
-from typing import Type, TypeVar, cast
+from typing import Protocol, Type, TypeVar, cast
 
 from diator.container.protocol import Container
 from diator.dispatcher import DefaultDispatcher, Dispatcher
 from diator.events import Event, EventEmitter
 from diator.middlewares import MiddlewareChain
 from diator.requests import RequestMap
-from diator.requests.request import TRequest
-from diator.response import TResponse
+from diator.requests.request import IRequest
+from diator.responses import IResponse
 
-Res = TypeVar("Res", bound=TResponse | None, covariant=True)
+Res = TypeVar("Res", bound=IResponse | None, covariant=True)
 
-class Mediator:
+class IMediator(Protocol):
+    """
+    The interface over a message broker.
+
+    Used for sending messages to message brokers (currently only redis supported).
+    """
+
+    async def send(self, request: IRequest[Res]) -> Res:
+        ...
+
+class Mediator(IMediator):
     """
     The main mediator object.
 
@@ -49,7 +59,7 @@ class Mediator:
             request_map=request_map, container=container, middleware_chain=middleware_chain  # type: ignore
         )
 
-    async def send(self, request: TRequest[Res]) -> Res:
+    async def send(self, request: IRequest[Res]) -> Res:
         dispatch_result = await self._dispatcher.dispatch(request)
 
         if dispatch_result.events:

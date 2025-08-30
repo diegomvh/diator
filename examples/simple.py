@@ -7,7 +7,7 @@ from di.dependent import Dependent
 from diator.container.di import DIContainer
 from diator.events import Event, EventEmitter, EventMap
 from diator.mediator import Mediator
-from diator.requests import Request, RequestHandler, RequestMap
+from diator.requests import Request, IRequestHandler, RequestMap
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -17,7 +17,7 @@ class JoinMeetingCommand(Request):
     is_late: bool = field(default=False)
 
 
-class JoinMeetingCommandHandler(RequestHandler[JoinMeetingCommand, None]):
+class JoinMeetingCommandHandler(IRequestHandler[JoinMeetingCommand, None]):
     def __init__(self, meeting_api) -> None:
         self._meeting_api = meeting_api
         self._events: list[Event] = []

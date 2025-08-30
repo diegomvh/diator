@@ -1,21 +1,21 @@
 from typing import Type
 
-from diator.requests.request import TRequest
-from diator.requests.request_handler import RequestHandler
+from diator.requests.request import IRequest
+from diator.requests.request_handler import IRequestHandler
 
 
 class RequestMap:
     def __init__(self) -> None:
-        self._request_map: dict[Type[TRequest], Type[RequestHandler]] = {}
+        self._request_map: dict[Type[IRequest], Type[IRequestHandler]] = {}
 
     def bind(
         self,
-        request_type: Type[TRequest],
-        handler_type: Type[RequestHandler],
+        request_type: Type[IRequest],
+        handler_type: Type[IRequestHandler],
     ) -> None:
         self._request_map[request_type] = handler_type
 
-    def get(self, request_type: Type[TRequest]) -> Type[RequestHandler]:
+    def get(self, request_type: Type[IRequest]) -> Type[IRequestHandler]:
         handler_type = self._request_map.get(request_type)
         if not handler_type:
             raise RequestHandlerDoesNotExist("RequestHandler not found matching Request type.")

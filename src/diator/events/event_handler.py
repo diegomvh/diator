@@ -5,7 +5,7 @@ from diator.events.event import DomainEvent
 E = TypeVar("E", bound=DomainEvent, contravariant=True)
 
 
-class EventHandler(Protocol[E]):
+class IEventHandler(Protocol[E]):
     """
     The event handler interface.
 

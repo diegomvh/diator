@@ -6,16 +6,16 @@ import pytest
 
 from diator.events import Event, EventEmitter, EventMap
 from diator.mediator import Mediator
-from diator.requests import Request, RequestHandler, RequestMap
-from diator.response import Response
+from diator.requests import Request, IRequestHandler, RequestMap
+from diator.responses import Response
 
 
-@dataclass(frozen=True, kw_only=True)
-class CloseMeetingRoomCommand(Request):
+@dataclass(kw_only=True)
+class CloseMeetingRoomCommand(Request[None]):
     meeting_room_id: UUID = field()
 
 
-class CloseMeetingRoomCommandHandler(RequestHandler[CloseMeetingRoomCommand, None]):
+class CloseMeetingRoomCommandHandler(IRequestHandler[CloseMeetingRoomCommand, None]):
     def __init__(self) -> None:
         self.called = False
         self._events: list[Event] = []
@@ -27,19 +27,18 @@ class CloseMeetingRoomCommandHandler(RequestHandler[CloseMeetingRoomCommand, Non
     async def handle(self, request: CloseMeetingRoomCommand) -> None:
         self.called = True
 
-
-@dataclass(frozen=True, kw_only=True)
-class ReadMeetingDetailsQuery(Request):
-    meeting_room_id: UUID = field()
-
-
-@dataclass(frozen=True, kw_only=True)
+@dataclass(kw_only=True)
 class ReadMeetingDetailsQueryResult(Response):
     meeting_room_id: UUID = field()
 
 
+@dataclass(kw_only=True)
+class ReadMeetingDetailsQuery(Request[ReadMeetingDetailsQueryResult]):
+    meeting_room_id: UUID = field()
+
+
 class ReadMeetingDetailsQueryHandler(
-    RequestHandler[ReadMeetingDetailsQuery, ReadMeetingDetailsQueryResult]  # type: ignore
+    IRequestHandler[ReadMeetingDetailsQuery, ReadMeetingDetailsQueryResult]  # type: ignore
 ):
     def __init__(self) -> None:
         self.called = False

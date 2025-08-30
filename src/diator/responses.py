@@ -2,11 +2,11 @@ from dataclasses import dataclass
 from typing import Protocol
 
 
-class TResponse(Protocol):
+class IResponse(Protocol):
     pass
 
 @dataclass(kw_only=True)
-class Response(TResponse):
+class Response(IResponse):
     """
     Base class for response type objects.
 

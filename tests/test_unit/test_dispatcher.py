@@ -6,10 +6,11 @@ from diator.container.protocol import Container
 from diator.dispatcher import DefaultDispatcher
 from diator.events import Event
 from diator.middlewares import MiddlewareChain
-from diator.requests import Request, RequestHandler
+from diator.middlewares.base import IMiddleware
+from diator.requests import Request, IRequestHandler
 from diator.requests.map import RequestMap
-from diator.requests.request import TRequest
-from diator.response import Response
+from diator.requests.request import IRequest
+from diator.responses import Response
 
 
 @dataclass(kw_only=True)
@@ -25,7 +26,7 @@ class ReadMeetingDetailsQuery(Request[ReadMeetingDetailsQueryResult]):
     third: str = field(default="")
 
 class ReadMeetingDetailsQueryHandler(
-    RequestHandler[ReadMeetingDetailsQuery, ReadMeetingDetailsQueryResult]  # type: ignore
+    IRequestHandler[ReadMeetingDetailsQuery, ReadMeetingDetailsQueryResult]  # type: ignore
 ):
     def __init__(self) -> None:
         self.called = False
@@ -69,9 +70,9 @@ async def test_default_dispatcher_logic() -> None:
 
     result = await dispatcher.dispatch(request)
 
-    assert request.meeting_room_id == "REQ"
+    assert request.meeting_room_id == UUID(int=0)
     assert result.response is not None 
-    assert result.response.meeting_room_id == "RES"
+    assert result.response.meeting_room_id == UUID(int=0)
 
 
 async def test_default_dispatcher_chain_logic() -> None:
@@ -85,13 +86,13 @@ async def test_default_dispatcher_chain_logic() -> None:
         middleware_chain=middleware_chain,
     )
 
-    request = ReadMeetingDetailsQuery(meeting_room_id=uuid4())
+    request = ReadMeetingDetailsQuery(meeting_room_id=UUID(int=0))
 
     result = await dispatcher.dispatch(request)
 
-    assert request.meeting_room_id == "REQ"
+    assert request.meeting_room_id == UUID(int=0)
     assert result.response is not None
-    assert result.response.meeting_room_id == "RES"
+    assert result.response.meeting_room_id == UUID(int=0)
 
     assert request.second == "DONE"
     assert result.response is not None
@@ -102,24 +103,24 @@ async def test_default_dispatcher_chain_logic() -> None:
     assert result.response.third == "DONE"
 
 
-class FirstMiddleware:
-    async def __call__(self, request: TRequest[Any], handle):
-        cast(ReadMeetingDetailsQuery, request).meeting_room_id = uuid4() 
+class FirstMiddleware(IMiddleware):
+    async def __call__(self, request: IRequest[Any], handle):
+        cast(ReadMeetingDetailsQuery, request).meeting_room_id = UUID(int=0)
         response = await handle(request)
-        response.meeting_room_id = "RES"
+        response.meeting_room_id = UUID(int=0)
         return response
 
 
-class SecondMiddleware:
-    async def __call__(self, request: TRequest[Any], handle):
+class SecondMiddleware(IMiddleware):
+    async def __call__(self, request: IRequest[Any], handle):
         cast(ReadMeetingDetailsQuery, request).second = "DONE"
         response = await handle(request)
         response.second = "DONE"
         return response
 
 
-class ThirdMiddleware:
-    async def __call__(self, request: TRequest[Any], handle):
+class ThirdMiddleware(IMiddleware):
+    async def __call__(self, request: IRequest[Any], handle):
         cast(ReadMeetingDetailsQuery, request).third = "DONE"
         response = await handle(request)
         response.third = "DONE"

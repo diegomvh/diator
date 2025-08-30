@@ -9,7 +9,7 @@ from diator.container.rodi import RodiContainer
 from diator.events import (
     DomainEvent,
     EventEmitter,
-    EventHandler,
+    IEventHandler,
     EventMap,
     NotificationEvent,
 )
@@ -17,7 +17,7 @@ from diator.mediator import Mediator
 from diator.message_brokers.redis import RedisMessageBroker
 from diator.middlewares import MiddlewareChain
 from diator.middlewares.logging import LoggingMiddleware
-from diator.requests import Request, RequestHandler, RequestMap
+from diator.requests import Request, IRequestHandler, RequestMap
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -35,7 +35,7 @@ class UserJoinedNotificationEvent(NotificationEvent):
     user_id: int
 
 
-class JoinMeetingRoomCommandHandler(RequestHandler[JoinMeetingRoomCommand, None]):
+class JoinMeetingRoomCommandHandler(IRequestHandler[JoinMeetingRoomCommand, None]):
     def __init__(self) -> None:
         self._events = []
 
@@ -48,7 +48,7 @@ class JoinMeetingRoomCommandHandler(RequestHandler[JoinMeetingRoomCommand, None]
         self._events.append(UserJoinedNotificationEvent(user_id=123))
 
 
-class UserJoinedEventHandler(EventHandler[UserJoinedDomainEvent]):
+class UserJoinedEventHandler(IEventHandler[UserJoinedDomainEvent]):
     async def handle(self, event: UserJoinedDomainEvent) -> None:
         print("READY", event)
 

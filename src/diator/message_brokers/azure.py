@@ -2,10 +2,10 @@ import orjson
 from azure.servicebus import ServiceBusMessage
 from azure.servicebus.aio import ServiceBusClient
 
-from diator.message_brokers.protocol import Message
+from diator.message_brokers.protocol import IMessageBroker, Message
 
 
-class AzureMessageBroker:
+class AzureMessageBroker(IMessageBroker):
     def __init__(self, client: ServiceBusClient, topic_name: str, *, timeout: float | None = None) -> None:
         self._client = client
         self._topic_name = topic_name

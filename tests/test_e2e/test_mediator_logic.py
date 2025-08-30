@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Awaitable, Callable, TypeVar
 
 import pytest
 from redis import asyncio as redis
@@ -9,32 +10,35 @@ from diator.events import EventEmitter, EventMap
 from diator.mediator import Mediator
 from diator.message_brokers.redis import RedisMessageBroker
 from diator.middlewares import MiddlewareChain
-from diator.requests import Request, RequestHandler, RequestMap
+from diator.middlewares.base import IMiddleware
+from diator.requests import Request, RequestMap
+from diator.requests.request import IRequest
+from diator.requests.request_handler import RequestHandler
+from diator.responses import IResponse
 
 
-@dataclass(frozen=True, kw_only=True)
-class JoinMeetingRoomCommand(Request):
+@dataclass(kw_only=True)
+class JoinMeetingRoomCommand(Request[None]):
     meeting_id: int
     user_id: int
 
 
 class JoinMeetingRoomCommandHandler(RequestHandler[JoinMeetingRoomCommand, None]):
     def __init__(self, redis_client: redis.Redis) -> None:
-        self._events = []
+        super().__init__()
         self._redis_client = redis_client
-
-    @property
-    def events(self) -> list:
-        return self._events
 
     async def handle(self, request: JoinMeetingRoomCommand) -> None:
         await self._redis_client.set(str(request.meeting_id), str(request.user_id))
 
+Req = TypeVar("Req", bound=IRequest, contravariant=True)
+Res = TypeVar("Res", bound=IResponse | None, covariant=True)
+HandleType = Callable[[Req], Awaitable[Res]]
 
-class TestMiddleware:
+class TestMiddleware(IMiddleware):
     _counter = 0
 
-    async def __call__(self, request: Request, handle):
+    async def __call__(self, request: IRequest[Res], handle: HandleType) -> Res:
         self._counter += 5
         return await handle(request)
 

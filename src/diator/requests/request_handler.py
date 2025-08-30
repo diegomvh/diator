@@ -1,14 +1,22 @@
 from typing import Protocol, TypeVar
 
 from diator.events.event import Event
-from diator.requests.request import TRequest
-from diator.response import TResponse
+from diator.requests.request import IRequest
+from diator.responses import IResponse
 
-Req = TypeVar("Req", bound=TRequest, contravariant=True)
-Res = TypeVar("Res", bound=TResponse | None, covariant=True)
+Req = TypeVar("Req", bound=IRequest, contravariant=True)
+Res = TypeVar("Res", bound=IResponse | None, covariant=True)
 
 
-class RequestHandler(Protocol[Req, Res]):
+class IRequestHandler(Protocol[Req, Res]):
+    @property
+    def events(self) -> list[Event]:
+        ...
+
+    async def handle(self, request: Req) -> Res:
+        ...
+
+class RequestHandler(IRequestHandler[Req, Res]):
     """
     The request handler interface.
 
@@ -37,9 +45,12 @@ class RequestHandler(Protocol[Req, Res]):
 
     """
 
+    def __init__(self) -> None:
+        self._events: list[Event] = []
+
     @property
     def events(self) -> list[Event]:
-        ...
+        return self._events
 
     async def handle(self, request: Req) -> Res:
         raise NotImplementedError

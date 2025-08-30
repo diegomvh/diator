@@ -11,7 +11,7 @@ class Message:
     payload: dict = field()
 
 
-class MessageBroker(Protocol):
+class IMessageBroker(Protocol):
     """
     The interface over a message broker.
 

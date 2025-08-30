@@ -1,3 +1,3 @@
-from diator.middlewares.base import Middleware, MiddlewareChain
+from diator.middlewares.base import IMiddleware, MiddlewareChain
 
-__all__ = ("Middleware", "MiddlewareChain")
+__all__ = ("IMiddleware", "MiddlewareChain")

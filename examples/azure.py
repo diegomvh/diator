@@ -10,7 +10,7 @@ from diator.container.rodi import RodiContainer
 from diator.events import EventEmitter, EventMap, NotificationEvent
 from diator.mediator import Mediator
 from diator.message_brokers.azure import AzureMessageBroker
-from diator.requests import Request, RequestHandler, RequestMap
+from diator.requests import Request, IRequestHandler, RequestMap
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -23,7 +23,7 @@ class UnactiveUsersCleaned(NotificationEvent):
     ids: list
 
 
-class CleanUnactiveUsersCommandHandler(RequestHandler[CleanUnactiveUsersCommand, None]):
+class CleanUnactiveUsersCommandHandler(IRequestHandler[CleanUnactiveUsersCommand, None]):
     def __init__(self) -> None:
         self._events = []
 

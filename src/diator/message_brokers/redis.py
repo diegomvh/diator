@@ -3,12 +3,12 @@ import logging
 import orjson
 from redis.asyncio import Redis
 
-from diator.message_brokers.protocol import Message
+from diator.message_brokers.protocol import IMessageBroker, Message
 
 logger = logging.getLogger(__name__)
 
 
-class RedisMessageBroker:
+class RedisMessageBroker(IMessageBroker):
     def __init__(self, client: Redis, *, channel_prefix: str | None = None) -> None:
         self._client = client
         self._channel_prefix = channel_prefix or "python_diator_channel"

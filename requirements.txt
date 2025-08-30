@@ -10,6 +10,7 @@ isort
 orjson
 redis
 rodi
+dishka
 di[anyio]
 azure-servicebus
 mkdocs

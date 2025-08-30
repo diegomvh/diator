@@ -2,14 +2,15 @@ from dataclasses import dataclass, field
 from typing import Protocol, TypeVar
 
 from diator.events.event import Event
-from diator.response import TResponse
+from diator.responses import IResponse
 
-Res = TypeVar("Res", bound=TResponse | None, covariant=True)
+Res = TypeVar("Res", bound=IResponse | None)
 
-class TDispatchResult(Protocol[Res]):
-    pass
+class IDispatchResult(Protocol[Res]):
+    response: Res | None
+    events: list[Event]
 
 @dataclass
-class DispatchResult(TDispatchResult[Res]):
+class DispatchResult(IDispatchResult[Res]):
     response: Res | None = field(default=None)
     events: list[Event] = field(default_factory=list)

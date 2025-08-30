@@ -2,16 +2,16 @@ from dataclasses import dataclass, field
 from typing import Protocol, TypeVar
 from uuid import UUID, uuid4
 
-from diator.response import TResponse
+from diator.responses import IResponse
 
-Res = TypeVar("Res", bound=TResponse | None, covariant=True)
+Res = TypeVar("Res", bound=IResponse | None, covariant=True)
 
-class TRequest(Protocol[Res]):
+class IRequest(Protocol[Res]):
     request_id: UUID
 
 
 @dataclass(kw_only=True)
-class Request(TRequest[Res]):
+class Request(IRequest[Res]):
     """
     Base class for request-type objects.
 

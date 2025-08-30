@@ -4,10 +4,10 @@ from diator.container.protocol import Container
 from diator.dispatcher.dispatch_result import DispatchResult
 from diator.middlewares.base import MiddlewareChain
 from diator.requests.map import RequestMap
-from diator.requests.request import TRequest
-from diator.response import TResponse
+from diator.requests.request import IRequest
+from diator.responses import IResponse
 
-Res = TypeVar("Res", bound=TResponse | None, covariant=True)
+Res = TypeVar("Res", bound=IResponse | None, covariant=True)
 
 class DefaultDispatcher:
     def __init__(
@@ -20,7 +20,7 @@ class DefaultDispatcher:
         self._container = container
         self._middleware_chain = middleware_chain or MiddlewareChain()
 
-    async def dispatch(self, request: TRequest[Res]) -> DispatchResult[Res]:
+    async def dispatch(self, request: IRequest[Res]) -> DispatchResult[Res]:
         handler_type = self._request_map.get(type(request))
 
         handler = await self._container.resolve(handler_type)
