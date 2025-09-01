@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from redis import asyncio as redis
 from rodi import Container
 
-from diator.container.rodi import RodiContainer
+from diator.containers.rodi import RodiContainer
 from diator.events import (
     DomainEvent,
     EventEmitter,

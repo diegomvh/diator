@@ -6,7 +6,7 @@ from datetime import timedelta
 import rodi
 from azure.servicebus.aio import ServiceBusClient
 
-from diator.container.rodi import RodiContainer
+from diator.containers.rodi import RodiContainer
 from diator.events import EventEmitter, EventMap, NotificationEvent
 from diator.mediator import Mediator
 from diator.message_brokers.azure import AzureMessageBroker

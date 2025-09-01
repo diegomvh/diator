@@ -5,7 +5,7 @@ import pytest
 from redis import asyncio as redis
 from rodi import Container, ServiceLifeStyle
 
-from diator.container.rodi import RodiContainer
+from diator.containers.rodi import RodiContainer
 from diator.events import EventEmitter, EventMap
 from diator.mediator import Mediator
 from diator.message_brokers.redis import RedisMessageBroker

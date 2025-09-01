@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from di import Container, bind_by_type
 from di.dependent import Dependent
 
-from diator.container.di import DIContainer
+from diator.containers.di import DIContainer
 from diator.events import Event, EventEmitter, EventMap
 from diator.mediator import Mediator
 from diator.requests import Request, IRequestHandler, RequestMap

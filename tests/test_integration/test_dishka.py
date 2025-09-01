@@ -1,6 +1,6 @@
 from dishka import Provider, Scope, make_async_container, provide
 
-from diator.container.dishka import DishkaContainer
+from diator.containers.dishka import DishkaContainer
 
 
 class Dependency:

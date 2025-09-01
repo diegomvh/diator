@@ -1,7 +1,7 @@
 from di import Container, bind_by_type
 from di.dependent import Dependent
 
-from diator.container.di import DIContainer
+from diator.containers.di import DIContainer
 
 
 class Dependency:

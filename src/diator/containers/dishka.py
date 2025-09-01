@@ -2,7 +2,7 @@ from typing import Type, TypeVar
 
 import dishka
 
-from diator.container.protocol import Container
+from diator.containers.protocol import Container
 
 T = TypeVar("T")
 

@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from typing import Any, cast
 from uuid import UUID, uuid4
 
-from diator.container.protocol import Container
-from diator.dispatcher import DefaultDispatcher
+from diator.containers.protocol import Container
+from diator.dispatchers import DefaultDispatcher
 from diator.events import Event
 from diator.middlewares import MiddlewareChain
 from diator.middlewares.base import IMiddleware

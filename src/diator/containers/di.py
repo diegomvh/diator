@@ -4,7 +4,7 @@ import di
 from di.dependent import Dependent
 from di.executors import AsyncExecutor
 
-from diator.container.protocol import Container
+from diator.containers.protocol import Container
 
 T = TypeVar("T")
 

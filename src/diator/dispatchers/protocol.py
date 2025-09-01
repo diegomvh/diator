@@ -1,6 +1,6 @@
 from typing import Protocol, TypeVar
 
-from diator.dispatcher.dispatch_result import IDispatchResult
+from diator.dispatchers.dispatch_result import IDispatchResult
 from diator.requests.request import IRequest
 from diator.responses import IResponse
 

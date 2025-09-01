@@ -1,7 +1,7 @@
 from typing import TypeVar
 
-from diator.container.protocol import Container
-from diator.dispatcher.dispatch_result import DispatchResult
+from diator.containers.protocol import Container
+from diator.dispatchers.dispatch_result import DispatchResult
 from diator.middlewares.base import MiddlewareChain
 from diator.requests.map import RequestMap
 from diator.requests.request import IRequest

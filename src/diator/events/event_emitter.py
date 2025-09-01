@@ -3,7 +3,7 @@ from functools import singledispatchmethod
 
 from dataclass_factory import Factory
 
-from diator.container.protocol import Container
+from diator.containers.protocol import Container
 from diator.events.event import DomainEvent, ECSTEvent, Event, NotificationEvent
 from diator.events.map import EventMap
 from diator.message_brokers.protocol import IMessageBroker, Message

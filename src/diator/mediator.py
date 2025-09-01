@@ -1,7 +1,7 @@
 from typing import Protocol, Type, TypeVar, cast
 
-from diator.container.protocol import Container
-from diator.dispatcher import DefaultDispatcher, Dispatcher
+from diator.containers.protocol import Container
+from diator.dispatchers import DefaultDispatcher, Dispatcher
 from diator.events import Event, EventEmitter
 from diator.middlewares import MiddlewareChain
 from diator.requests import RequestMap
